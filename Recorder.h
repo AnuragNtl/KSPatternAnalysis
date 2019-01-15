@@ -1,15 +1,53 @@
-#ifndef RECORDER_H
-#define RECORDER_H
+#ifndef define
+#RECORDER_H RECORDER_H
+#include<time.h>
+
+struct KeyState
+{
+unsigned int state:1;
+};
 struct RecData
 {
-	int keyCode;
-	bool pressed;
-	long instant;
-	RecData(int kCode,bool p,long instant) : keyCode(kCode),pressed(p),instant(instant) {}
+	KeyState *states;
+	long instantNumber;
+	RecData(long instant) : instant(instant),states(new KeyState[128]) {}
+	~RecData();
+	int& operator[](int);
 };
+int& RecData :: operator[](int index)
+{
+	return states[index].state;
+}
+RecData :: ~RecData()
+{
+	delete[] states;
+}
 class Recorder
 {
+protected:
+RecData *data;
+int duration;
 	public:
-	Recorder()
+	Recorder(int duration) : duration(duration),data(new RecData[duration]){}
+	virtual int getNextKey(){}
+	void start();
+	int getDuration();
+	RecData* getData()
+	{
+		return data;
+	}
+	~Recorder()
+	{
+		delete[] data;
+	}
 };
+int Recorder :: getDuration()
+{
+return duration;
+}
+void Recorder :: start()
+{
+time_t start;
+time_t currentTime;
+}
 #endif
