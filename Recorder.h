@@ -1,20 +1,27 @@
 #ifndef define
-#RECORDER_H RECORDER_H
-#include<time.h>
+#define RECORDER_H
+
+#include<ctime>
+#include<string>
+#include<unistd.h>
+#include<cstdio>
+#include<fcntl.h>
+
+using namespace std;
 
 struct KeyState
 {
-unsigned int state:1;
+unsigned int state;
+KeyState() : state(0){}
 };
 struct RecData
 {
 	KeyState *states;
-	long instantNumber;
-	RecData(long instant) : instant(instant),states(new KeyState[128]) {}
+	RecData() : states(new KeyState[128]) {}
 	~RecData();
-	int& operator[](int);
+	unsigned int& operator[](int);
 };
-int& RecData :: operator[](int index)
+unsigned int& RecData :: operator[](int index)
 {
 	return states[index].state;
 }
@@ -29,7 +36,7 @@ RecData *data;
 int duration;
 	public:
 	Recorder(int duration) : duration(duration),data(new RecData[duration]){}
-	virtual int getNextKey(){}
+	virtual int getNextKey()=0;
 	void start();
 	int getDuration();
 	RecData* getData()
@@ -47,7 +54,20 @@ return duration;
 }
 void Recorder :: start()
 {
-time_t start;
-time_t currentTime;
+time_t start,prevSec;
+double timeDiff=0;
+time(&start);
+prevSec=start;
+timeDiff=0;
+while(time(NULL)-start<duration)
+{
+int key=getNextKey();
+if(key!=-1)
+data[(int)timeDiff][key]=1;
+timeDiff=(time(NULL)-prevSec);
+if(timeDiff>1)
+	prevSec=time(NULL);
+cout <<(time(NULL)-start) <<endl;
+}
 }
 #endif
