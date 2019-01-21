@@ -5,6 +5,7 @@
 #include<stdio.h>
 #include"Recorder.h"
 #include<string>
+#include<fcntl.h>
 
 using namespace std;
 
@@ -22,6 +23,8 @@ LRecorder :: LRecorder(int duration,string dPath) : Recorder(duration),
 dPath(dPath)
 {
 fd=open(dPath.c_str(),O_RDONLY);
+if(fd<0)
+throw std::exception();
 }
 int LRecorder :: getNextKey()
 {
