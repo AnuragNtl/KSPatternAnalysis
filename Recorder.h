@@ -68,6 +68,10 @@ int Recorder :: getDuration()
 {
 return duration;
 }
+int Recorder :: getNumberOfKeys()
+{
+	return numberOfKeys;
+}
 void Recorder :: start()
 {
 	started=true;

@@ -1,5 +1,6 @@
 #include<iostream>
 #include"LRecorder.h"
+#include"CmdlineLabelAssigner.h"
 int main(int argc,char *argv[])
 {
 	try
@@ -21,6 +22,9 @@ for(int k=0;k<KEYS_LENGTH;k++)
 cout <<data1[i][k];
 cout <<"\n";
 }
+cout <<rec.getNumberOfKeys() <<"\n";
+CmdlineLabelAssigner ll1;
+cout <<ll1.getLabel() <<"\n";
 }
 catch(std::exception &e)
 {
