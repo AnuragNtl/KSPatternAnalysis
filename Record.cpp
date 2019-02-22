@@ -13,8 +13,7 @@ for(int i=0;i<10;i++)
 	for(int k=0;k<128;k++)
 		if(data[i][k]==1)
 			cout <<k <<" ";
-		cout <<"\n";
-	}
+		cout <<"\n	}
 vector<vector<bool> > data1=rec.getDataMatrix();
 for(int i=0;i<data1.size();i++)
 {
