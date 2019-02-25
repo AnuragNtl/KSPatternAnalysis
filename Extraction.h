@@ -2,6 +2,7 @@
 #define EXTRACTION_H
 #include<string>
 #include<vector>
+#include<functional>
 /*
  1-9:2-10
  11:0
@@ -29,6 +30,8 @@ class SimpleExraction
     short getSentenceLength();
     string getRaw();
     vector<string> getWords();
+    template<class Arg,class Result>
+    Result apply(unary_function<Arg,Result>);
 };
 
 #endif
