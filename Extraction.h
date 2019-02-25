@@ -2,7 +2,13 @@
 #define EXTRACTION_H
 #include<string>
 #include<vector>
-
+/*
+ 1-9:2-10
+ 11:0
+ Q-P:16-25
+ A-L:30-38
+ Z-M:44-50
+ */
 using namespace std;
 
 class Sequence
@@ -24,5 +30,6 @@ class SimpleExraction
     string getRaw();
     vector<string> getWords();
 };
+
 #endif
 
