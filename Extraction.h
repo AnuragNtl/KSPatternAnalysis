@@ -5,7 +5,7 @@
 #include<functional>
 /*
  1-9:2-10
- 11:0
+ 0:11
  Q-P:16-25
  A-L:30-38
  Z-M:44-50
@@ -30,9 +30,22 @@ class SimpleExraction
     short getSentenceLength();
     string getRaw();
     vector<string> getWords();
+    int countActionKeys();
+    int countAlphas();
+    int countAlnums();
+    int countDigits();
+    int countSymbols();
     template<class Arg,class Result>
     Result apply(unary_function<Arg,Result>);
 };
-
+SimpleExtraction :: SimpleExtraction(){}
+SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
+{
+    this->data=data;
+}
+float SimpleExtraction :: getSpeed()
+{
+    
+}
 #endif
 

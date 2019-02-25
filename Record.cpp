@@ -1,22 +1,9 @@
 #include<iostream>
 #include"LRecorder.h"
 #include"CmdlineLabelAssigner.h"
-class S1
-{
-public:
-virtual void show(){cout <<"______\n";}    
-};
-class S2 : public S1
-{
-  public:
-  void show(){cout <<"___:::::::____\n";}
-};
+
 int main(int argc,char *argv[])
 {
-    S2 s22;
-    S1 &s2=s22;
-    s2.show();
-    return 0;
 	try
 	{
 LRecorder rec(10,"/dev/input/by-path/platform-i8042-serio-0-event-kbd");
