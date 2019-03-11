@@ -45,7 +45,15 @@ SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
 }
 float SimpleExtraction :: getSpeed()
 {
-    
+    int ct=0,len=0;
+    for(int i=0;i<data.size();i++)
+    {
+        for(int k=0;k<data[i].size();k++)
+            if(data[i][k])
+                ct++;
+            len++;
+    }
+    return (len>0?ct/len:0);
 }
 #endif
 
