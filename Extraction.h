@@ -38,6 +38,7 @@ class SimpleExraction
 {
   private:
     vector<vector<bool> > &data;
+    vector<vector<int> > positions;
   public:
     SimpleExraction();
     SimpleExtraction(vector<vector<bool> >&);
@@ -59,6 +60,16 @@ SimpleExtraction :: SimpleExtraction(){}
 SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
 {
     this->data=data;
+    for(auto it=data.begin();it!=data.end();it++)
+    {
+        vector<int> ss;
+        for(int i=0;i<it->size();i++)
+        {
+            if((*it)[i])
+                ss.push_back(i);
+        }
+        positions.push_back(ss);
+    }
 }
 float SimpleExtraction :: getSpeed()
 {
@@ -75,15 +86,20 @@ float SimpleExtraction :: getSpeed()
 short SimpleExraction :: getCharacterLength()
 {
   int ct=0;
-  for_each(data.begin(),data.end(),[&,ct](vector<int> &v){
-ct+=count_if(data.begin(),data.end(),[](int indx){
-return indx>0;
+  for_each(data.begin(),data.end(),[&,ct](vector<bool> &v){
+ct+=count_if(data.begin(),data.end(),[](bool indx){
+return indx;
     });
       });
 }
 short SimpleExraction :: countAlphas()
 {
-
+    int ct=0;
+    for_each(positions.begin(),positions.end(),
+        [&,ct](vector<int> &v)
+        {
+            count_if()
+        });
 }
 #endif
 
