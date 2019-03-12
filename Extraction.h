@@ -16,7 +16,24 @@ class Sequence
 {
 
 };
-  
+
+class AlphaCheck : public unary_function<bool,int>
+{
+  public:
+    bool operator()(int) const;
+}; 
+bool AlphaCheck :: operator()(int index) const
+{
+return (index>=16 && index<=25) || (index>=30 && index<=38) || (index>=44 && index<=50);
+}
+class DigitCheck
+{
+  public:
+    bool operator()(int index)
+    {
+    return index>=2 && index<=11;
+    }
+};
 class SimpleExraction
 {
   private:
@@ -54,6 +71,19 @@ float SimpleExtraction :: getSpeed()
             len++;
     }
     return (len>0?ct/len:0);
+}
+short SimpleExraction :: getCharacterLength()
+{
+  int ct=0;
+  for_each(data.begin(),data.end(),[&,ct](vector<int> &v){
+ct+=count_if(data.begin(),data.end(),[](int indx){
+return indx>0;
+    });
+      });
+}
+short SimpleExraction :: countAlphas()
+{
+
 }
 #endif
 
