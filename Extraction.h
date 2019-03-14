@@ -4,12 +4,17 @@
 #include<vector>
 #include<functional>
 #include<map>
+#include<set>
+
 /*
  1-9:2-10
  0:11
  Q-P:16-25
  A-L:30-38
  Z-M:44-50
+ Space:57
+ Controls:1,15,28,29,42,54,56,57(space),58,59-248
+ Symbols:12-14,26,27,29,39-41,43,51-54,55
  */
 using namespace std;
 
@@ -48,11 +53,11 @@ class SimpleExtraction
     vector<vector<bool> > &data;
     vector<vector<int> > positions;
     const map<int,int> keyCharacterMap;
+    void initKeyCharacterMap();
   protected:
       void applyToAllLists(function<void(vector<int>)>) const;
   public:
     SimpleExtraction(vector<vector<bool> >&);
-    void initKeyCharacterMap();
     float getSpeed();
     short getCharacterLength();
     short getWordsLength();
@@ -76,8 +81,22 @@ void SimpleExtraction :: initKeyCharacterMap()
  Q-P:16-25
  A-L:30-38
  Z-M:44-50
+ 
  */
-
+keyCharacter[48]=11;
+for(int i=1;i<=9;i++)
+{
+    keyCharacterMap[48+i]=i+1;
+}
+char layout[]="qwertyuiopasdfghjklzxcvbnm";
+int ranges[][2]={{16,25},{30,38},{44,50}};
+int i1=0;
+for(int i=0;i<3;i++)
+{
+    int p=ranges[i][0],q=ranges[i][1];
+    for(int k=p;k<=q;k++,i1++)
+    keyCharacterMap[(int)layout[i1]]=k;
+}
 }
 SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
 {
