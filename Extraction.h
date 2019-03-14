@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<functional>
+#include<map>
 /*
  1-9:2-10
  0:11
@@ -12,11 +13,18 @@
  */
 using namespace std;
 
-class Sequence
+class SymbolCheck
 {
-
+    public:
+    bool operator()(int index)
+    {
+        return true;
+    }
 };
-
+bool controlCheck(int index)
+{
+    return true;
+}
 class AlphaCheck : public unary_function<bool,int>
 {
   public:
@@ -39,18 +47,19 @@ class SimpleExtraction
   private:
     vector<vector<bool> > &data;
     vector<vector<int> > positions;
+    const map<int,int> keyCharacterMap;
   protected:
-    template<ResultType>
-      ResultType applyToAllLists(function<)
+      void applyToAllLists(function<void(vector<int>)>) const;
   public:
-    SimpleExtraction();
     SimpleExtraction(vector<vector<bool> >&);
+    void initKeyCharacterMap();
     float getSpeed();
     short getCharacterLength();
     short getWordsLength();
     short getSentenceLength();
     string getRaw();
     vector<string> getWords();
+    vector<string> getTypedCharacters();
     int countActionKeys();
     int countAlphas();
     int countAlnums();
@@ -59,7 +68,17 @@ class SimpleExtraction
     template<class Arg,class Result>
     Result apply(unary_function<Arg,Result>);
 };
-SimpleExtraction :: SimpleExtraction(){}
+void SimpleExtraction :: initKeyCharacterMap()
+{
+    /*
+ 1-9:2-10
+ 0:11
+ Q-P:16-25
+ A-L:30-38
+ Z-M:44-50
+ */
+
+}
 SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
 {
     this->data=data;
@@ -122,9 +141,36 @@ short SimpleExtraction :: countAlnums()
 {
 return countAlphas()+countDigits();
 }
-vector<string> SimpleExtraction :: getWords()
+bool spaceCheck(int index)
 {
+    return true;
+}
+vector<string> SimpleExtraction :: getTypedCharacters()
+{
+    vector<string> words;
+applyToAllLists([&words](vector<int> data) -> void
+{
+    string word="";
+    for(int i=0;i<data.size();i++)
+    {
+    if(controlCheck(data[i]))
+    break;
+    else if(spaceCheck(data[i]))
+    word=word+
+}
 
+    if(i<data.size())
+    return;
+});
+return words;
+}
+vector<string> SimpleExtraction :: getTypedWords()
+{
+    
+}
+void SimpleExtractions :: applyToAllLists(function<void(vector<int>)> f) const
+{
+    for_each(positions.begin(),positions.end(),f);
 }
 #endif
 
