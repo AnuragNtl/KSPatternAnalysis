@@ -34,13 +34,16 @@ class DigitCheck
     return index>=2 && index<=11;
     }
 };
-class SimpleExraction
+class SimpleExtraction
 {
   private:
     vector<vector<bool> > &data;
     vector<vector<int> > positions;
+  protected:
+    template<ResultType>
+      ResultType applyToAllLists(function<)
   public:
-    SimpleExraction();
+    SimpleExtraction();
     SimpleExtraction(vector<vector<bool> >&);
     float getSpeed();
     short getCharacterLength();
@@ -83,7 +86,7 @@ float SimpleExtraction :: getSpeed()
     }
     return (len>0?ct/len:0);
 }
-short SimpleExraction :: getCharacterLength()
+short SimpleExtraction :: getCharacterLength()
 {
   int ct=0;
   for_each(data.begin(),data.end(),[&,ct](vector<bool> &v){
@@ -92,14 +95,36 @@ return indx;
     });
       });
 }
-short SimpleExraction :: countAlphas()
+short SimpleExtraction :: countAlphas()
 {
-    int ct=0;
+   short ct=0;
     for_each(positions.begin(),positions.end(),
         [&,ct](vector<int> &v)
         {
-            count_if()
+            ct+=count_if(v.begin(),v.end(),AlphaCheck());
         });
+    return ct;
+}
+bool digitCheck(int indx)
+{
+  return indx>=2 && indx<=11;
+}
+short SimpleExtraction :: countDigits()
+{
+short ct=0;
+for_each(positions.begin(),positions.end(),[&ct](vector<int> &data)
+    {
+    ct+=count_if(data.begin(),data.end(),digitCheck);
+    });
+return ct;
+}
+short SimpleExtraction :: countAlnums()
+{
+return countAlphas()+countDigits();
+}
+vector<string> SimpleExtraction :: getWords()
+{
+
 }
 #endif
 
