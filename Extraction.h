@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<functional>
+#include<algorithm>
 #include<map>
 #include<set>
 
@@ -50,26 +51,26 @@ class DigitCheck
 class SimpleExtraction
 {
   private:
-    vector<vector<bool> > &data;
+    vector<vector<bool> > data;
     vector<vector<int> > positions;
-    const map<int,int> keyCharacterMap;
+    map<int,int> keyCharacterMap;
     void initKeyCharacterMap();
   protected:
       void applyToAllLists(function<void(vector<int>)>) const;
   public:
-    SimpleExtraction(vector<vector<bool> >&);
+    SimpleExtraction(vector<vector<bool> >);
     float getSpeed();
     short getCharacterLength();
     short getWordsLength();
     short getSentenceLength();
     string getRaw();
-    vector<string> getWords();
+    vector<string> getTypedWords();
     vector<string> getTypedCharacters();
-    int countActionKeys();
-    int countAlphas();
-    int countAlnums();
-    int countDigits();
-    int countSymbols();
+    short countActionKeys();
+    short countAlphas();
+    short countAlnums();
+    short countDigits();
+    short countSymbols();
     template<class Arg,class Result>
     Result apply(unary_function<Arg,Result>);
 };
@@ -81,12 +82,15 @@ void SimpleExtraction :: initKeyCharacterMap()
  Q-P:16-25
  A-L:30-38
  Z-M:44-50
+  Space:57
+ Controls:1,15,28,29,42,54,56,57(space),58,59-248
+ Symbols:12-14,26,27,29,39-41,43,51-54,55
  
  */
-keyCharacter[48]=11;
+keyCharacterMap[11]=48;
 for(int i=1;i<=9;i++)
 {
-    keyCharacterMap[48+i]=i+1;
+    keyCharacterMap[i+1]=48+i;
 }
 char layout[]="qwertyuiopasdfghjklzxcvbnm";
 int ranges[][2]={{16,25},{30,38},{44,50}};
@@ -95,10 +99,11 @@ for(int i=0;i<3;i++)
 {
     int p=ranges[i][0],q=ranges[i][1];
     for(int k=p;k<=q;k++,i1++)
-    keyCharacterMap[(int)layout[i1]]=k;
+    keyCharacterMap[k]=(int)layout[i1];
 }
+keyCharacterMap[57]=32;
 }
-SimpleExtraction :: SimpleExtraction(vector<vector<bool> > &data)
+SimpleExtraction :: SimpleExtraction(vector<vector<bool> > data)
 {
     this->data=data;
     for(auto it=data.begin();it!=data.end();it++)
@@ -127,17 +132,18 @@ float SimpleExtraction :: getSpeed()
 short SimpleExtraction :: getCharacterLength()
 {
   int ct=0;
-  for_each(data.begin(),data.end(),[&,ct](vector<bool> &v){
-ct+=count_if(data.begin(),data.end(),[](bool indx){
+  for_each(data.begin(),data.end(),[&ct](vector<bool> &v){
+ct+=count_if(v.begin(),v.end(),[](bool indx){
 return indx;
     });
       });
+  return ct;
 }
 short SimpleExtraction :: countAlphas()
 {
    short ct=0;
     for_each(positions.begin(),positions.end(),
-        [&,ct](vector<int> &v)
+        [&ct](vector<int> &v)
         {
             ct+=count_if(v.begin(),v.end(),AlphaCheck());
         });
@@ -167,16 +173,27 @@ bool spaceCheck(int index)
 vector<string> SimpleExtraction :: getTypedCharacters()
 {
     vector<string> words;
-applyToAllLists([&words](vector<int> data) -> void
+applyToAllLists([&words,this](vector<int> data) -> void
 {
     string word="";
-    for(int i=0;i<data.size();i++)
+    int i=0;
+    for(i=0;i<data.size();i++)
     {
     if(controlCheck(data[i]))
     break;
-    else if(spaceCheck(data[i]))
-    word=word+
+    else if(spaceCheck(data[i]) || digitCheck(data[i]) || SymbolCheck()(data[i]))
+    {
+    if(word.size()>0)
+    {
+    words.push_back(word);
+    word="";
+    }
+     }
+     else if(AlphaCheck()(data[i]))
+     word=word+(char)keyCharacterMap[data[i]];
 }
+if(word.size()>0)
+words.push_back(word);
 
     if(i<data.size())
     return;
@@ -185,9 +202,9 @@ return words;
 }
 vector<string> SimpleExtraction :: getTypedWords()
 {
-    
+   return getTypedCharacters(); 
 }
-void SimpleExtractions :: applyToAllLists(function<void(vector<int>)> f) const
+void SimpleExtraction :: applyToAllLists(function<void(vector<int>)> f) const
 {
     for_each(positions.begin(),positions.end(),f);
 }

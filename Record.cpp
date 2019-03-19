@@ -1,6 +1,7 @@
 #include<iostream>
 #include"LRecorder.h"
 #include"CmdlineLabelAssigner.h"
+#include"Extraction.h"
 
 int main(int argc,char *argv[])
 {
