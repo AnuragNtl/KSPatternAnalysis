@@ -1,5 +1,5 @@
 # KSPatternAnalysis
-<h3>A tool to automatically collect Keystroke dynamics data from the user and save in different formats, such as CSV.</h3>
+<h3>A tool to automatically collect Keystroke dynamics data, also collect labels to be assigned to the data via GUI prompts(for supervised learning algorithms), from the user and save in different formats, such as CSV.</h3>
 <br>
 <h3>
 As soon as the data collection is complete:</h3>
