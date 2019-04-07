@@ -9,14 +9,14 @@ public static void main(String[] args)
 {
 def f1=new JFrame();
 def p1=new JPanel();
-t1=new JComboBox<String>();
-t1.setEditable(true);
 def jsonSlurper=new JsonSlurper();
 def object;
 if(new File("EntryList.json").exists())
 object=jsonSlurper.parseText(new File("EntryList.json").getText()) as Set;
 else
 object=[] as Set;
+t1=new JComboBox<String>(object.toArray(new String[0]));
+t1.setEditable(true);
 JButton b1;
 b1=new JButton("Add");
 p1.setLayout(new GridLayout(0,1));

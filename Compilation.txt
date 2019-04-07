@@ -1,0 +1,2 @@
+g++ PopupManager.cpp -I /usr/lib/jvm/java-8-oracle/include/ -I/usr/lib/jvm/java-8-oracle/include/linux -L/usr/lib/jvm/java-8-oracle/jre/lib/i386/server -o PopupManager -ljvm -lpthread
+javac -cp ./json-rpc-1.0.jar Popup.java

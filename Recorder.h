@@ -81,8 +81,10 @@ time(&start);
 prevSec=start;
 timeDiff=0;
 int i=0;
+cout <<"start\n";
 while(time(NULL)-start<duration)
 {
+	cout <<"::" <<(int)(time(NULL)-start) <<"\n";
 int key=getNextKey();
 if(key!=-1 && i<duration)
 {
