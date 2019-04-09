@@ -7,8 +7,8 @@ int main(int argc,char *argv[])
 {
 	try
 	{
-	    
-LRecorder rec(10,"/dev/input/by-path/platform-i8042-serio-0-event-kbd");
+	    string inputFile=getContents("Recorder.conf");
+LRecorder rec(10,inputFile);
 rec.start();
 RecData *data=rec.getData();
 for(int i=0;i<10;i++)
