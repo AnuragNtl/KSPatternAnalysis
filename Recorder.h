@@ -12,14 +12,26 @@ using namespace std;
 struct KeyState
 {
 bool state;
-KeyState() : state(false){}
+int counter;
+KeyState(int);
+KeyState() : state(false),counter(0){}
+operator int()
+{
+	return counter;
+}
 };
+KeyState :: KeyState(int counter) : counter(counter) {}
 struct RecData
 {
+	int counter;
 	KeyState *states;
-	RecData() : states(new KeyState[KEYS_LENGTH]) {}
+	RecData() : states(new KeyState[KEYS_LENGTH]),counter(0) {}
 	~RecData();
 	bool& operator[](int);
+	KeyState& stateAt(int index)
+	{
+		return states[index];
+	}
 };
 bool& RecData :: operator[](int index)
 {
@@ -50,16 +62,16 @@ int numberOfKeys;
 	{
 		delete[] data;
 	}
-	vector<vector<bool> > getDataMatrix();
+	vector<vector<int> > getDataMatrix();
 };
-vector<vector<bool> > Recorder :: getDataMatrix()
+vector<vector<int> > Recorder :: getDataMatrix()
 	{
-		vector<vector<bool> > r(duration);
+		vector<vector<int> > r(duration);
 		for(int i=0;i<duration;i++)
 		{
-			r[i]=vector<bool>(KEYS_LENGTH);
+			r[i]=vector<int>(KEYS_LENGTH);
 			for(int k=0;k<KEYS_LENGTH;k++)
-			r[i][k]=data[i][k];
+			r[i][k]=data[i].stateAt(k).counter;
 		}
 		return r;
 	}
@@ -89,6 +101,8 @@ int key=getNextKey();
 if(key!=-1 && i<duration)
 {
 data[i][key]=true;
+data[i].stateAt(key).counter=numberOfKeys;
+cout <<"State at " <<data[i].stateAt(key).counter <<"\n";
 numberOfKeys++;
 }
 timeDiff=(time(NULL)-prevSec);

@@ -18,18 +18,105 @@
  Symbols:12-14,26,27,29,39-41,43,51-54,55
  */
 using namespace std;
+///////////////////////////////////
+ostream& operator<<(ostream &out,set<int> &data)
+{
+    set<int> :: iterator it=data.begin();
+    out <<"[";
+    for(it=it;it!=data.end();it++)
+        cout <<*it <<" ";
+    out <<"]\n";
+return out;
+}
+///////////////////////////////////
+struct KeyCodeMap
+{
+set<int> controlKeys;
+set<int> symbols;
+int space;
+int bkspace,tab;
+set<int> alphabets;
+int enter1,enter2;
+set<int> numbers;
+void initializeDefaultControlKeys();
+void initializeDefaultAlphaKeys();
+void initializeDefaultSymbolKeys();
+void initializeDefaultNumberKeys();
+void initializeDefaultEnter();
+void initializeDefaultSpaces();
+KeyCodeMap();
+void printAll()
+{
+    cout <<controlKeys <<symbols <<alphabets <<numbers;
+}
+}defaultKeyCodeMap;
+KeyCodeMap :: KeyCodeMap()
+{
+initializeDefaultSpaces();
+initializeDefaultEnter();
+initializeDefaultNumberKeys();
+initializeDefaultAlphaKeys();
+initializeDefaultSymbolKeys();
+initializeDefaultControlKeys();
+printAll();
+}
 
+void KeyCodeMap :: initializeDefaultEnter()
+{
+    this->enter1=0x001c;
+    this->enter2=0x0060;
+}
+void KeyCodeMap :: initializeDefaultSpaces()
+{
+    this->bkspace=14;
+    this->space=57;
+    this->tab=15;
+}
+void KeyCodeMap :: initializeDefaultNumberKeys()
+{
+    for(int i=2;i<=11;i++)
+        numbers.insert(i);
+}
+void KeyCodeMap :: initializeDefaultAlphaKeys()
+{
+    int ranges[][2]={{16,25},{30,38},{44,50}};
+    for(int i=0;i<3;i++)
+    {
+        int p=ranges[i][0],q=ranges[i][1];
+        for(int k=p;k<=q;k++)
+        alphabets.insert(k);
+    }
+}
+void KeyCodeMap :: initializeDefaultSymbolKeys()
+{
+    int symbolList[]={
+0x000c,0x000d,0x001a,0x001b,0x002b,0x0027,0x0028,0x0029,0x0033,0x0034,0x0035,0x0062,0x0037,0x004a,0x004e,0x0053,0x0075};
+for(int i=0;i<16;i++)
+symbols.insert(symbolList[i]);
+}
+void KeyCodeMap :: initializeDefaultControlKeys()
+{
+    for(int i=0;i<=248;i++)
+    {
+        if(symbols.find(i)==symbols.end() && alphabets.find(i)==alphabets.end() && numbers.find(i)==numbers.end())
+            controlKeys.insert(i);
+    }
+}
 class SymbolCheck
 {
+private:
+    KeyCodeMap &kMap;
     public:
+        SymbolCheck() : kMap(defaultKeyCodeMap){}
+        SymbolCheck(KeyCodeMap &kMap) : kMap(kMap){}
     bool operator()(int index)
     {
-        return true;
+        return kMap.symbols.find(index)!=kMap.symbols.end();
     }
 };
 bool controlCheck(int index)
 {
-    return true;
+    return defaultKeyCodeMap.controlKeys.find(index)!=defaultKeyCodeMap.controlKeys.end();
 }
 class AlphaCheck : public unary_function<bool,int>
 {
@@ -38,27 +125,27 @@ class AlphaCheck : public unary_function<bool,int>
 }; 
 bool AlphaCheck :: operator()(int index) const
 {
-return (index>=16 && index<=25) || (index>=30 && index<=38) || (index>=44 && index<=50);
+return defaultKeyCodeMap.alphabets.find(index)!=defaultKeyCodeMap.alphabets.end();
 }
 class DigitCheck
 {
   public:
     bool operator()(int index)
     {
-    return index>=2 && index<=11;
+    return defaultKeyCodeMap.numbers.find(index)!=defaultKeyCodeMap.numbers.end();
     }
 };
 class SimpleExtraction
 {
   private:
-    vector<vector<bool> > data;
+    vector<vector<int> > data;
     vector<vector<int> > positions;
     map<int,int> keyCharacterMap;
     void initKeyCharacterMap();
   protected:
       void applyToAllLists(function<void(vector<int>)>) const;
   public:
-    SimpleExtraction(vector<vector<bool> >);
+    SimpleExtraction(vector<vector<int> >);
     float getSpeed();
     short getCharacterLength();
     short getWordsLength();
@@ -71,6 +158,7 @@ class SimpleExtraction
     short countAlnums();
     short countDigits();
     short countSymbols();
+    //Deprecated in C++14. Need to change that.
     template<class Arg,class Result>
     Result apply(unary_function<Arg,Result>);
 };
@@ -103,17 +191,23 @@ for(int i=0;i<3;i++)
 }
 keyCharacterMap[57]=32;
 }
-SimpleExtraction :: SimpleExtraction(vector<vector<bool> > data)
+SimpleExtraction :: SimpleExtraction(vector<vector<int> > data)
 {
+    initKeyCharacterMap();
     this->data=data;
     for(auto it=data.begin();it!=data.end();it++)
     {
+        map<int,int> order;
         vector<int> ss;
         for(int i=0;i<it->size();i++)
         {
             if((*it)[i])
-                ss.push_back(i);
+            {
+                order.insert(pair<int,int>((*it)[i],i));
+            }
         }
+        for(auto it=order.begin();it!=order.end();it++)
+            ss.push_back(it->second);
         positions.push_back(ss);
     }
 }
@@ -132,7 +226,7 @@ float SimpleExtraction :: getSpeed()
 short SimpleExtraction :: getCharacterLength()
 {
   int ct=0;
-  for_each(data.begin(),data.end(),[&ct](vector<bool> &v){
+  for_each(data.begin(),data.end(),[&ct](vector<int> &v){
 ct+=count_if(v.begin(),v.end(),[](bool indx){
 return indx;
     });
@@ -168,7 +262,7 @@ return countAlphas()+countDigits();
 }
 bool spaceCheck(int index)
 {
-    return true;
+    return defaultKeyCodeMap.space==index || defaultKeyCodeMap.tab==index;
 }
 vector<string> SimpleExtraction :: getTypedCharacters()
 {
@@ -180,9 +274,12 @@ applyToAllLists([&words,this](vector<int> data) -> void
     for(i=0;i<data.size();i++)
     {
     if(controlCheck(data[i]))
-    break;
+ {
+cout <<"Control Detected\n";
+ }
     else if(spaceCheck(data[i]) || digitCheck(data[i]) || SymbolCheck()(data[i]))
     {
+        cout <<"Other detected\n";
     if(word.size()>0)
     {
     words.push_back(word);
@@ -190,7 +287,12 @@ applyToAllLists([&words,this](vector<int> data) -> void
     }
      }
      else if(AlphaCheck()(data[i]))
+     {
+        cout <<"Character Detected\n";
      word=word+(char)keyCharacterMap[data[i]];
+ }
+ else
+    cout <<data[i] <<", ";
 }
 if(word.size()>0)
 words.push_back(word);
