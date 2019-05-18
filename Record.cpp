@@ -7,6 +7,35 @@ string getContents(string);
 //#include"keyboard.h"
 int main(int argc,char *argv[])
 {
+  char optString[]="o:bktsv";
+  int duration=10;
+  bool raw=false;
+  string directory;
+  bool typedCharacters=false,typedStrings=false,typeSpeed=false,typeKeyCodes=false;
+  int opt=getopt(argc,argv,optString);
+while(opt!=-1)
+{
+switch(opt)
+{
+  case 'o':
+    directory=optarg;
+    break;
+  case 'b':raw=true;
+           break;
+  case 'k':typeKeyCodes=true;
+           break;
+  case 't':typedCharacters=true;
+           break;
+  case 's':typedStrings=true;
+           break;
+  case 'v':typeSpeed=true;
+           break;
+  case '?':cout <<"Unknown option " <<(char)opt <<"\n";
+           break;
+}
+opt=getopt(argc,argv,optString);
+}
+cout <<raw <<" " <<directory <<"\n";
 	try
 	{
 	    string inputFile=getContents("Recorder.conf");
