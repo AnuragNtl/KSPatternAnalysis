@@ -7,7 +7,7 @@ string getContents(string);
 //#include"keyboard.h"
 int main(int argc,char *argv[])
 {
-  char optString[]="o:bktsv";
+  char optString[]="o:bktsvd:";
   int duration=10;
   bool raw=false;
   string directory;
@@ -30,12 +30,15 @@ switch(opt)
            break;
   case 'v':typeSpeed=true;
            break;
+  case 'd':duration=stoi(string(optarg));
+  break;
   case '?':cout <<"Unknown option " <<(char)opt <<"\n";
            break;
 }
 opt=getopt(argc,argv,optString);
 }
 cout <<raw <<" " <<directory <<"\n";
+cout <<duration <<"\n";
 	try
 	{
 	    string inputFile=getContents("Recorder.conf");
