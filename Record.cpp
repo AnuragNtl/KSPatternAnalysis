@@ -4,15 +4,17 @@
 #include<fstream>
 #include"Extraction.h"
 string getContents(string);
+#include"FSIO.h"
 //#include"keyboard.h"
 int main(int argc,char *argv[])
 {
   char optString[]="o:bktsvd:";
   int duration=10;
   bool raw=false;
-  string directory;
+  string directory=".";
   bool typedCharacters=false,typedStrings=false,typeSpeed=false,typeKeyCodes=false;
   int opt=getopt(argc,argv,optString);
+  const FSIO *fsio=getDefaultFSIO();
 while(opt!=-1)
 {
 switch(opt)
@@ -43,18 +45,44 @@ cout <<duration <<"\n";
 	{
 	    string inputFile=getContents("Recorder.conf");
 	    cout <<inputFile <<"\n";
-LRecorder rec(4,inputFile);
+LRecorder rec(duration,inputFile);
 rec.start();
-vector<vector<int> > data1=rec.getDataMatrix();
-for(int i=0;i<data1.size();i++)
+if(!fsio->exists(directory))
 {
-for(int k=0;k<KEYS_LENGTH;k++)
-cout <<data1[i][k];
-cout <<"\n";
+  fsio->createDirectory(directory);
 }
-cout <<"_______________\n";
-cout <<rec.getNumberOfKeys() <<"\n";
+if(raw)
+{
+  vector<vector<int> > rawMatrix=rec.getDataMatrix();
+  ofstream rawFile(directory+"/RawMatrix.txt");
+  for(vector<vector<int> > :: iterator it=rawMatrix.begin();it!=rawMatrix.end();it++)
+  {
+    for(vector<int> :: iterator it1=it->begin();it1!=it->end();it++)
+    {
+      rawFile <<*it1;
+    }
+    rawFile <<endl;
+  }
+  rawFile.close();
+}
+vector<vector<int> > data1=rec.getDataMatrix();
 SimpleExtraction extraction(data1);
+if(typedCharacters)
+{
+  ofstream typedCharactersFile(directory+"/TypedCharacters.txt");
+  vector<string> typedWords=extraction.getTypedCharacters();
+  for(int i=0;i<typedWords.size();i++)
+  {
+    typedCharactersFile <<typedWords[i] <<endl;
+  }
+  typedCharactersFile.close();
+}
+if(typeSpeed)
+{
+  ofstream speedFile(directory+"/Speed.txt");
+  speedFile <<extraction.getSpeed() <<endl;
+  speedFile.close();
+}
 cout <<extraction.getCharacterLength() <<"\n";
 vector<string> typed=extraction.getTypedCharacters();
 cout <<"_______Typed________\n";
@@ -62,6 +90,10 @@ for(int i=0;i<typed.size();i++)
 cout <<typed[i] <<"\n";
 //CmdlineLabelAssigner ll1;
 //cout <<ll1.getLabel() <<"\n";
+if(typeKeyCodes)
+{
+  
+}
 }
 catch(std::exception &e)
 {

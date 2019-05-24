@@ -221,7 +221,7 @@ float SimpleExtraction :: getSpeed()
                 ct++;
             len++;
     }
-    return (len>0?ct/len:0);
+    return (len>0?(float)ct/(float)len:0);
 }
 short SimpleExtraction :: getCharacterLength()
 {
@@ -270,10 +270,15 @@ vector<string> SimpleExtraction :: getTypedCharacters()
 applyToAllLists([&words,this](vector<int> data) -> void
 {
     string word="";
+    if(words.size()>0)
+    {
+        word=words[words.size()-1];
+        words.resize(words.size()-1);
+    }
     int i=0;
     for(i=0;i<data.size();i++)
     {
-    if(controlCheck(data[i]))
+    if(controlCheck(data[i]) && !spaceCheck(data[i]))
  {
 cout <<"Control Detected\n";
  }
@@ -304,11 +309,10 @@ return words;
 }
 vector<string> SimpleExtraction :: getTypedWords()
 {
-   return getTypedCharacters(); 
+   return getTypedCharacters();
 }
 void SimpleExtraction :: applyToAllLists(function<void(vector<int>)> f) const
 {
     for_each(positions.begin(),positions.end(),f);
 }
 #endif
-

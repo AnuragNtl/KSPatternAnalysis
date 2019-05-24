@@ -1,11 +1,14 @@
 #ifndef FSIO_H
 #define FSIO_H
-#ifdef WIN
+#include<string>
+using namespace std;
 class FSIO
 {
 public:
-virtual bool exists(string path)=0;
-virtual void createDirectory(string)=0;
+virtual bool exists(string path) const=0;
+virtual void createDirectory(string) const=0;
 };
-#endif
+#include"FSIOL.h"
+#include"FSIOW.h"
+extern const FSIO* getDefaultFSIO();
 #endif
