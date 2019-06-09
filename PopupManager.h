@@ -23,7 +23,9 @@ string getLabelFromPopup()
 	jclass cls;
 	jmethodID mid;
 	jstring p;
-	options[0].optionString="-Djava.class.path=.:./json-rpc-1.0.jar";
+	char params[]="-Djava.class.path=.:./json-rpc-1.0.jar";
+	options[0].optionString=new char[strlen(params)];
+	strcpy(options[0].optionString,params);
 	memset(&vm_args,0,sizeof(vm_args));
 	vm_args.version=JNI_VERSION_1_8;
 	vm_args.nOptions=1;
@@ -34,7 +36,7 @@ string getLabelFromPopup()
 	if(status==JNI_ERR)
 	{
 		cout <<"Error\n";
-		return 1;
+		return "";
 	}
 	cls=env->FindClass("Popup");
 	if(cls==NULL)

@@ -5,7 +5,8 @@
 #include"Extraction.h"
 string getContents(string);
 #include"FSIO.h"
-//#include"keyboard.h"
+#include"PopupManager.h"
+
 void showMessage();
 int main(int argc,char *argv[])
 {
@@ -66,6 +67,7 @@ cout <<duration <<"\n";
 	    cout <<inputFile <<"\n";
 LRecorder rec(duration,inputFile);
 rec.start();
+string label = getLabelFromPopup();
 if(!fsio->exists(directory))
 {
   fsio->createDirectory(directory);
@@ -177,4 +179,5 @@ void showMessage() {
   cout << "-y : Save Alphanumeric Count\n";
   cout << "-i : Save Symbol Count\n";
   cout << "-l : Save Action Keys Count\n";
+  cout << "-a : Append to existing files\n";
 }
