@@ -150,7 +150,7 @@ class SimpleExtraction
     short getCharacterLength();
     short getWordsLength();
     short getSentenceLength();
-    string getRaw();
+    vector<vector<int> > getRaw();
     vector<string> getTypedWords();
     vector<string> getTypedCharacters();
     short countActionKeys();
@@ -158,6 +158,7 @@ class SimpleExtraction
     short countAlnums();
     short countDigits();
     short countSymbols();
+    vector<vector<int> > getTypedKeyCodes();
     //Deprecated in C++14. Need to change that.
     template<class Arg,class Result>
     Result apply(unary_function<Arg,Result>);
@@ -191,6 +192,12 @@ for(int i=0;i<3;i++)
 }
 keyCharacterMap[57]=32;
 }
+vector<vector<int> > SimpleExtraction :: getTypedKeyCodes() {
+    return positions;
+}
+vector<vector<int> > SimpleExtraction :: getRaw() {
+    return data;
+}
 SimpleExtraction :: SimpleExtraction(vector<vector<int> > data)
 {
     initKeyCharacterMap();
@@ -222,6 +229,22 @@ float SimpleExtraction :: getSpeed()
             len++;
     }
     return (len>0?(float)ct/(float)len:0);
+}
+short SimpleExtraction :: countSymbols() {
+    short symbolCount = 0;
+    applyToAllLists([&symbolCount](vector<int> list) {
+        symbolCount += count_if(list.begin(), list.end(), [](int typed) {
+            return SymbolCheck()(typed);
+        });
+    });
+}
+short SimpleExtraction :: countActionKeys() {
+    short actionKeyCount = 0;
+    applyToAllLists([&actionKeyCount](vector<int> list) {
+        actionKeyCount += count_if(list.begin(), list.end(), [](int typed) {
+            return controlCheck(typed);
+        });
+    });
 }
 short SimpleExtraction :: getCharacterLength()
 {

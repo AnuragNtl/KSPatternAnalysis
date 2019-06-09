@@ -6,17 +6,25 @@
 string getContents(string);
 #include"FSIO.h"
 //#include"keyboard.h"
+void showMessage();
 int main(int argc,char *argv[])
 {
-  char optString[]="o:bktsvd:";
+  char optString[]="o:bktsvd:anyil";
   int duration=10;
   bool raw=false;
   string directory=".";
   bool typedCharacters=false,typedStrings=false,typeSpeed=false,typeKeyCodes=false;
   int opt=getopt(argc,argv,optString);
+  bool alphaCount = false, digitCount = false, alnumCount = false, symbolCount = false,
+       actionKeysCount = false;
   const FSIO *fsio=getDefaultFSIO();
+  if(argc <= 1) {
+    showMessage();
+    return 0;
+  }
 while(opt!=-1)
 {
+  cout <<(char)opt <<endl;
 switch(opt)
 {
   case 'o':
@@ -33,6 +41,17 @@ switch(opt)
   case 'v':typeSpeed=true;
            break;
   case 'd':duration=stoi(string(optarg));
+           break;
+  case 'a':alphaCount = true;
+  break;
+  case 'n':digitCount = true;
+  break;
+  case 'y':alnumCount = true;
+  break;
+  case 'i':
+  symbolCount = true;
+  break;
+  case 'l':actionKeysCount = true;
   break;
   case '?':cout <<"Unknown option " <<(char)opt <<"\n";
            break;
@@ -57,7 +76,7 @@ if(raw)
   ofstream rawFile(directory+"/RawMatrix.txt");
   for(vector<vector<int> > :: iterator it=rawMatrix.begin();it!=rawMatrix.end();it++)
   {
-    for(vector<int> :: iterator it1=it->begin();it1!=it->end();it++)
+    for(vector<int> :: iterator it1=it->begin();it1!=it->end();it1++)
     {
       rawFile <<*it1;
     }
@@ -73,7 +92,7 @@ if(typedCharacters)
   vector<string> typedWords=extraction.getTypedCharacters();
   for(int i=0;i<typedWords.size();i++)
   {
-    typedCharactersFile <<typedWords[i] <<endl;
+     typedCharactersFile <<typedWords[i] <<endl;
   }
   typedCharactersFile.close();
 }
@@ -90,9 +109,37 @@ for(int i=0;i<typed.size();i++)
 cout <<typed[i] <<"\n";
 //CmdlineLabelAssigner ll1;
 //cout <<ll1.getLabel() <<"\n";
-if(typeKeyCodes)
-{
-  
+if(typeKeyCodes) {
+  ofstream keyCodesFile(directory + "/KeyCodes.txt");
+  vector<vector<int> > keyCodes = extraction.getTypedKeyCodes();
+  for(vector<vector<int> > :: iterator it = keyCodes.begin(); it != keyCodes.end(); it++) {
+    for(vector<int> :: iterator it1 = it->begin(); it1 != it->end(); it1++)
+      keyCodesFile << *it1;
+    keyCodesFile << "\n";
+  }
+  keyCodesFile.close();
+}
+if(typedStrings) {
+  ofstream typedStringsFile(directory + "/TypedStrings.txt");
+  vector<string> typedStrings = extraction.getTypedCharacters();
+  for(auto it = typedStrings.begin(); it != typedStrings.end(); it++) {
+    typedStringsFile << *it << endl;
+  }
+  typedStringsFile.close();
+}
+if(alphaCount || digitCount || alnumCount || symbolCount || actionKeysCount) {
+  ofstream countFile(directory + "/Count.txt");
+  if(alphaCount)
+    countFile << "AlphaCount = " << extraction.countAlphas() << endl;
+  if(digitCount)
+    countFile << "DigitCount = " << extraction.countDigits() << endl;
+  if(alnumCount)
+    countFile << "AlnumCount = " << extraction.countAlnums() << endl;
+  if(symbolCount)
+    countFile << "SymbolCount = " << extraction.countSymbols() << endl;
+  if(actionKeysCount)
+    countFile << "ActionKeysCount = " << extraction.countActionKeys() << endl;
+  countFile.close();
 }
 }
 catch(std::exception &e)
@@ -113,4 +160,21 @@ do
  }
  while(!in.eof());
  return data;
+}
+void showMessage() {
+  cout << "\tKS Pattern Recorder \n";
+  cout << "Usage:\n";
+  cout << "Record [OPTIONS]\n";
+  cout << "OPTIONS:\n";
+  cout << "-o DIRECTORY : Output Directory to save the recorded data\n";
+  cout << "-b : Save Raw data matrix\n";
+  cout << "-k : Save typed Key Codes in sequence\n";
+  cout << "-t : Save typed Strings\n";
+  cout << "-v : Save type speed\n";
+  cout << "-d : Duration for recording\n";
+  cout << "-a : Save Alphabet Count\n";
+  cout << "-n : Save Digit Count\n";
+  cout << "-y : Save Alphanumeric Count\n";
+  cout << "-i : Save Symbol Count\n";
+  cout << "-l : Save Action Keys Count\n";
 }
