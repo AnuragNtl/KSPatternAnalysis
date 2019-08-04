@@ -1,4 +1,4 @@
-#ifndef define
+#ifndef RECORDER_H
 #define RECORDER_H
 
 #include<ctime>

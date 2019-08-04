@@ -1,3 +1,6 @@
+#ifndef POPUP_MANAGER_H
+#define POPUP_MANAGER_H
+
 #include<iostream>
 #include<jni.h>
 #include<unistd.h>
@@ -44,13 +47,16 @@ string getLabelFromPopup()
 		cout <<"Class Not Found\n";
 	}
 	mid=env->GetStaticMethodID(cls,"getLabel","()Ljava/lang/String;");
+	string label = "";
 	if(mid!=0)
 	{
 		p=(jstring)env->CallStaticObjectMethod(cls,mid);
-		cout <<"Result " <<env->GetStringUTFChars(p,NULL) <<":\n";
+		label = env->GetStringUTFChars(p, NULL);
 		}
 	else
 		cout <<"Cant Call\n";
 	jvm->DestroyJavaVM();
-return env->GetStringUTFChars(p,NULL);
+return label;
 }
+
+#endif

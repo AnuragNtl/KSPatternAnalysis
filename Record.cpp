@@ -1,11 +1,14 @@
 #include<iostream>
 #include"LRecorder.h"
-#include"CmdlineLabelAssigner.h"
+//#include"PopupLabelAssigner.h"
 #include<fstream>
+#include <ctime>
 #include"Extraction.h"
-string getContents(string);
 #include"FSIO.h"
 #include"PopupManager.h"
+#include "Capture.h"
+
+string getContents(string);
 
 void showMessage();
 int main(int argc,char *argv[])
@@ -46,8 +49,8 @@ switch(opt)
   case 'a':alphaCount = true;
   break;
   case 'n':digitCount = true;
-  break;
-  case 'y':alnumCount = true;
+  break; 
+ case 'y':alnumCount = true;
   break;
   case 'i':
   symbolCount = true;
@@ -66,12 +69,20 @@ cout <<duration <<"\n";
 	    string inputFile=getContents("Recorder.conf");
 	    cout <<inputFile <<"\n";
 LRecorder rec(duration,inputFile);
+cout << "Starting recording\n";
 rec.start();
+cout << "Getting label from popup\n";
 string label = getLabelFromPopup();
+cout << label << endl;
 if(!fsio->exists(directory))
 {
   fsio->createDirectory(directory);
 }
+time_t startTime;
+time(&startTime);
+string recordTime = to_string(startTime);
+directory = directory + "/KSPatternAnalysis_" + recordTime;
+fsio->createDirectory(directory);
 if(raw)
 {
   vector<vector<int> > rawMatrix=rec.getDataMatrix();
